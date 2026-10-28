@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Detective Beagle Preview</title>
+<style>
+  :root { --bg: #0d0b24; --app: #15123a; --gold: #f4c95d; --lilac: #b9b3e6; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 30%, #2a2466, var(--bg) 70%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 24px 16px;
+  }
+  .phone {
+    width: min(360px, 100%); height: 740px; background: var(--app); border-radius: 44px;
+    border: 10px solid #05040f; box-shadow: 0 30px 80px rgba(0,0,0,.6), inset 0 0 0 2px #2b2760;
+    position: relative; overflow: hidden; display: flex; flex-direction: column; padding-bottom: 18px;
+  }
+  .notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 110px; height: 28px; background: #05040f; border-radius: 20px; z-index: 2; }
+  header { text-align: center; padding-top: 52px; }
+  h1 { margin: 0; color: var(--gold); font-size: 30px; font-weight: 800; letter-spacing: .5px; }
+  .sub { color: var(--lilac); font-style: italic; font-size: 14px; margin-top: 4px; }
+  .stage { flex: 1; position: relative; margin: 0 6px; cursor: pointer; min-height: 0; }
+  .stage svg { width: 100%; height: 100%; display: block; }
+  .bubble {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: #fffdf5; color: #2b1a10;
+    font-weight: 700; padding: 9px 15px; border-radius: 18px; white-space: nowrap; font-size: 15px;
+    opacity: 0; transition: opacity .2s; pointer-events: none;
+  }
+  .bubble.show { opacity: 1; }
+  .clues { color: #e8e4ff; text-align: center; margin-bottom: 12px; }
+  .moves { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; padding: 0 14px; }
+  button { font: inherit; cursor: pointer; }
+  .pill { border: 1.5px solid var(--gold); background: none; color: var(--gold); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 14px; }
+  .pill.active { background: var(--gold); color: var(--app); }
+  .play { align-self: center; margin-top: 14px; background: #2e2870; color: #fff; border: 0; border-radius: 999px; padding: 11px 26px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="notch"></div>
+  <header><h1>Detective Beagle</h1><div class="sub">The Case of the Missing Groove</div></header>
+
+  <div class="stage" id="stage" title="Tap the beagle to find a clue">
+    <svg viewBox="-50 0 400 420" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="spot" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff6c8" stop-opacity=".45"/>
+          <stop offset="1" stop-color="#fff6c8" stop-opacity=".06"/>
+        </linearGradient>
+        <pattern id="tweed" patternUnits="userSpaceOnUse" width="10" height="10">
+          <rect width="10" height="10" fill="#8a6a3f"/>
+          <path d="M0 5H10M5 0V10" stroke="#6b4f2a" stroke-width="1.5" stroke-opacity=".6"/>
+        </pattern>
+        <pattern id="plaid" patternUnits="userSpaceOnUse" width="14" height="14">
+          <rect width="14" height="14" fill="#a0784a"/>
+          <rect y="5" width="14" height="4" fill="#7d5a33" fill-opacity=".7"/>
+          <rect x="5" width="4" height="14" fill="#7d5a33" fill-opacity=".7"/>
+          <path d="M0 12H14M12 0V14" stroke="#c0392b" stroke-width=".8" stroke-opacity=".6"/>
+        </pattern>
+      </defs>
+
+      <circle cx="300" cy="55" r="22" fill="#f5e9b8"/>
+      <circle cx="292" cy="50" r="4" fill="#e3d49a"/>
+      <circle cx="306" cy="63" r="3" fill="#e3d49a"/>
+      <g id="city"></g>
+      <path d="M125 0L175 0L290 392L10 392Z" fill="url(#spot)"/>
+      <ellipse cx="150" cy="390" rx="175" ry="22" fill="#2a2350"/>
+      <ellipse id="shadow" cx="150" cy="378" rx="60" ry="8" fill="#000" fill-opacity=".3"/>
+      <g id="notes"></g>
+
+      <g id="body">
+        <g id="tail">
+          <path d="M188 292Q225 270 222 228" stroke="#c98a4b" stroke-width="12" stroke-linecap="round" fill="none"/>
+          <circle cx="222" cy="224" r="8" fill="#f8f3ea"/>
+        </g>
+        <g id="legL">
+          <rect x="116" y="292" width="24" height="74" rx="12" fill="#c98a4b"/>
+          <ellipse cx="124" cy="368" rx="19" ry="10" fill="#f8f3ea"/>
+        </g>
+        <g id="legR">
+          <rect x="160" y="292" width="24" height="74" rx="12" fill="#c98a4b"/>
+          <ellipse cx="176" cy="368" rx="19" ry="10" fill="#f8f3ea"/>
+        </g>
+
+        <path d="M100 212Q150 194 200 212L212 305Q150 324 88 305Z" fill="url(#tweed)" stroke="#5a3d22" stroke-width="2"/>
+        <path d="M132 203L150 258L168 203Z" fill="#f8f3ea"/>
+        <path d="M128 204L148 252L120 226Z" fill="#6b4f2a"/>
+        <path d="M172 204L152 252L180 226Z" fill="#6b4f2a"/>
+        <rect x="93" y="280" width="114" height="10" fill="#5a3d22"/>
+        <rect x="142" y="277" width="16" height="16" rx="2" fill="none" stroke="#e1b84b" stroke-width="3"/>
+        <path d="M150 210L137 202L137 218ZM150 210L163 202L163 218Z" fill="#c0392b"/>
+        <circle cx="150" cy="210" r="4" fill="#962d22"/>
+
+        <g id="armR">
+          <rect x="185" y="210" width="20" height="62" rx="10" fill="url(#tweed)" stroke="#5a3d22" stroke-width="1.5"/>
+          <circle cx="195" cy="274" r="11" fill="#f8f3ea"/>
+        </g>
+        <g id="armL">
+          <rect x="101" y="276" width="8" height="26" rx="3" fill="#4a2f1a"/>
+          <circle cx="105" cy="318" r="20" fill="#bfe6ff" fill-opacity=".5" stroke="#d4a017" stroke-width="6"/>
+          <path d="M93 312Q97 302 107 300" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" stroke-opacity=".8"/>
+          <rect x="95" y="210" width="20" height="62" rx="10" fill="url(#tweed)" stroke="#5a3d22" stroke-width="1.5"/>
+          <circle cx="105" cy="274" r="11" fill="#f8f3ea"/>
+        </g>
+
+        <g id="head">
+          <ellipse cx="150" cy="150" rx="48" ry="44" fill="#c98a4b"/>
+          <path d="M143 110Q150 106 157 110L163 160L137 160Z" fill="#f8f3ea"/>
+          <ellipse cx="150" cy="176" rx="31" ry="21" fill="#f8f3ea"/>
+          <path d="M118 132Q128 126 138 131" stroke="#5a3519" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M162 131Q172 126 182 132" stroke="#5a3519" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <circle cx="128" cy="146" r="7" fill="#1f140c"/><circle cx="130.5" cy="143" r="2.3" fill="#fff"/>
+          <circle cx="172" cy="146" r="7" fill="#1f140c"/><circle cx="174.5" cy="143" r="2.3" fill="#fff"/>
+          <circle cx="121" cy="170" r="6" fill="#ff9aa2" fill-opacity=".5"/>
+          <circle cx="179" cy="170" r="6" fill="#ff9aa2" fill-opacity=".5"/>
+          <path d="M144 184Q150 199 156 184Z" fill="#ff7a8a"/>
+          <path d="M150 171L150 180M137 179Q143 187 150 180Q157 187 163 179" stroke="#1f140c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <ellipse cx="150" cy="164" rx="11" ry="8" fill="#1f140c"/>
+          <ellipse cx="146" cy="161" rx="3.5" ry="2" fill="#fff" fill-opacity=".6"/>
+          <g id="earL"><path d="M108 125Q82 135 84 185Q88 205 104 200Q114 175 116 135Z" fill="#7a4a25"/></g>
+          <g id="earR"><path d="M192 125Q218 135 216 185Q212 205 196 200Q186 175 184 135Z" fill="#7a4a25"/></g>
+          <g id="hat">
+            <path d="M104 120Q106 72 150 68Q194 72 196 120Z" fill="url(#plaid)" stroke="#5a3d1e" stroke-width="2"/>
+            <path d="M150 68L150 120M127 73Q121 96 119 120M173 73Q179 96 181 120" stroke="#5a3d1e" stroke-width="1.5" stroke-opacity=".5" fill="none"/>
+            <path d="M104 117Q150 142 196 117Q150 128 104 117Z" fill="#6b4a26"/>
+            <path d="M150 69Q138 55 131 65Q140 74 150 69ZM150 69Q162 55 169 65Q160 74 150 69Z" fill="#6b4a26"/>
+            <circle cx="150" cy="69" r="3.5" fill="#5a3d1e"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+    <div class="bubble" id="bubble"></div>
+  </div>
+
+  <div class="clues">🔍 Clues found: <span id="clues">0</span></div>
+  <div class="moves" id="moves"></div>
+  <button class="play" id="play">❚❚&nbsp; Pause</button>
+</div>
+
+<script>
+// Mirrors src/dance.js so the preview moves exactly like the app.
+const MOVES = [
+  { key: 'groove', label: 'Groove' },
+  { key: 'twist', label: 'Twist' },
+  { key: 'shuffle', label: 'Sleuth Shuffle' },
+];
+const TAU = Math.PI * 2;
+function getPose(t, move) {
+  if (move === 'twist') {
+    const p = t * TAU * 1.2, s = Math.sin(p);
+    return { x: 0, y: 6 - Math.abs(Math.sin(2 * p)) * 6, sway: s * 14, head: -s * 12, earL: s * 25, earR: s * 25,
+      armL: 80 + s * 40, armR: -80 + s * 40, legL: s * 12, legR: s * 12, tail: Math.sin(4 * p) * 35, hat: 0 };
+  }
+  if (move === 'shuffle') {
+    const p = t * TAU * 0.8, s2 = Math.sin(2 * p);
+    return { x: Math.sin(p) * 30, y: -Math.abs(s2) * 8, sway: -Math.cos(p) * 5, head: Math.sin(p) * 8,
+      earL: -s2 * 12, earR: -s2 * 12, armL: 140 + s2 * 8, armR: -30 + s2 * 20, legL: s2 * 18, legR: s2 * 18,
+      tail: Math.sin(3 * p) * 25, hat: -Math.abs(s2) * 3 };
+  }
+  const p = t * TAU, s = Math.sin(p);
+  return { x: 0, y: -Math.abs(s) * 14, sway: s * 6, head: Math.sin(p + 0.6) * 10, earL: -s * 18, earR: -s * 18,
+    armL: 95 + s * 25, armR: -140 + Math.sin(2 * p) * 25, legL: Math.max(0, s) * 25, legR: -Math.max(0, -s) * 25,
+    tail: Math.sin(3 * p) * 30, hat: -Math.max(0, Math.sin(p + 1)) * 5 };
+}
+
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs, parent) => {
+  const node = document.createElementNS(NS, tag);
+  for (const k in attrs) node.setAttribute(k, attrs[k]);
+  parent.appendChild(node);
+  return node;
+};
+
+const city = document.getElementById('city');
+[[-50, 48, 150], [0, 42, 105], [44, 52, 170], [232, 44, 135], [278, 32, 185], [312, 48, 120]].forEach(([bx, w, h], b) => {
+  el('rect', { x: bx, y: 400 - h, width: w, height: h, fill: '#1f1b4a' }, city);
+  for (let wy = 400 - h + 10; wy < 385; wy += 16)
+    for (let wx = bx + 6; wx < bx + w - 8; wx += 12)
+      if ((wx * 7 + wy * 13 + b) % 5 < 2) el('rect', { x: wx, y: wy, width: 5, height: 7, fill: '#ffd66b', 'fill-opacity': .8 }, city);
+});
+
+const noteLayer = document.getElementById('notes');
+const notes = [0, 1, 2, 3, 4].map(i => {
+  const n = el('text', { fill: '#f4c95d', 'font-weight': 'bold', 'font-size': 22 + (i % 3) * 6 }, noteLayer);
+  n.textContent = i % 2 ? '♫' : '♪';
+  return n;
+});
+
+const $ = id => document.getElementById(id);
+const parts = ['body', 'tail', 'legL', 'legR', 'armL', 'armR', 'head', 'earL', 'earR', 'hat', 'shadow'].reduce((o, k) => (o[k] = $(k), o), {});
+
+let move = 'groove', playing = true, elapsed = 0, last = performance.now();
+function render(t) {
+  const q = getPose(t, move);
+  parts.body.setAttribute('transform', `translate(${q.x} ${q.y}) rotate(${q.sway} 150 320)`);
+  parts.tail.setAttribute('transform', `rotate(${q.tail} 188 292)`);
+  parts.legL.setAttribute('transform', `rotate(${q.legL} 128 300)`);
+  parts.legR.setAttribute('transform', `rotate(${q.legR} 172 300)`);
+  parts.armL.setAttribute('transform', `rotate(${q.armL} 105 218)`);
+  parts.armR.setAttribute('transform', `rotate(${q.armR} 195 218)`);
+  parts.head.setAttribute('transform', `rotate(${q.head} 150 200)`);
+  parts.earL.setAttribute('transform', `rotate(${q.earL} 108 128)`);
+  parts.earR.setAttribute('transform', `rotate(${q.earR} 192 128)`);
+  parts.hat.setAttribute('transform', `translate(0 ${q.hat})`);
+  parts.shadow.setAttribute('cx', 150 + q.x);
+  parts.shadow.setAttribute('rx', 60 - Math.max(0, -q.y) * 1.5);
+  notes.forEach((n, i) => {
+    const ph = (t * 0.35 + i / 5) % 1;
+    n.setAttribute('x', (i % 2 ? 250 : 30) + Math.sin(ph * 6 + i) * 18);
+    n.setAttribute('y', 360 - ph * 300);
+    n.setAttribute('fill-opacity', Math.sin(ph * Math.PI));
+  });
+}
+function frame(now) {
+  if (playing) elapsed += (now - last) / 1000;
+  last = now;
+  render(elapsed);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+const movesEl = $('moves');
+MOVES.forEach(m => {
+  const b = document.createElement('button');
+  b.className = 'pill' + (m.key === move ? ' active' : '');
+  b.textContent = m.label;
+  b.onclick = () => { move = m.key; [...movesEl.children].forEach(c => c.classList.toggle('active', c === b)); };
+  movesEl.appendChild(b);
+});
+$('play').onclick = () => { playing = !playing; $('play').innerHTML = playing ? '❚❚&nbsp; Pause' : '▶&nbsp; Dance'; };
+
+const LINES = ['Woof! A clue! 🔍', 'Elementary, my dear walker.', 'The bone is in the garden!', 'I smell a mystery...', 'Case closed. Let’s dance!'];
+let clues = 0, timer;
+$('stage').onclick = () => {
+  $('clues').textContent = ++clues;
+  const bubble = $('bubble');
+  bubble.textContent = LINES[Math.floor(Math.random() * LINES.length)];
+  bubble.classList.add('show');
+  clearTimeout(timer);
+  timer = setTimeout(() => bubble.classList.remove('show'), 1800);
+};
+</script>
+</body>
+</html>

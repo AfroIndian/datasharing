@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "Detective Beagle",
+    "slug": "detective-beagle",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#15123a",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.detectivebeagle"
+    },
+    "android": {
+      "package": "com.example.detectivebeagle",
+      "adaptiveIcon": {
+        "backgroundColor": "#15123a"
+      }
+    }
+  }
+}
